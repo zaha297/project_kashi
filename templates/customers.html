@@ -1,0 +1,101 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Customers{% endblock %}
+{% block section %}CUSTOMERS{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">CUSTOMER DIRECTORY</div>
+        <h1>
+            Customers
+            <span class="count-label">{{ customers|length }} records</span>
+        </h1>
+        <p>Customer details are stored in the CUSTOMER table.</p>
+    </div>
+
+    <a class="button button-dark" href="{{ url_for('customer_new') }}">
+        ＋ Register customer
+    </a>
+</div>
+
+<div class="panel table-panel">
+
+    {% if customers %}
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>CUSTOMER</th>
+                    <th>CONTACT</th>
+                    <th>CITY</th>
+                    <th>DATE OF BIRTH</th>
+                    <th>REGISTERED</th>
+                    <th>ACCOUNTS</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for c in customers %}
+                <tr>
+                    <td>
+                        <div class="person-cell">
+                            <span class="avatar">
+                                {{ (c.FirstName or '?')[0]|upper }}{{ (c.LastName or '?')[0]|upper }}
+                            </span>
+
+                            <span>
+                                <strong>{{ c.FirstName }} {{ c.LastName }}</strong>
+                                <small class="sub-cell">
+                                    ID · {{ c.CustomerID }}
+                                </small>
+                            </span>
+                        </div>
+                    </td>
+
+                    <td>
+                        <span>{{ c.Mobile }}</span>
+                        <small class="sub-cell">{{ c.Email or '—' }}</small>
+                    </td>
+
+                    <td>{{ c.City or '—' }}</td>
+
+                    <td>
+                        {{ c.DOB.strftime('%d %b %Y') if c.DOB else '—' }}
+                    </td>
+
+                    <td>
+                        {{ c.RegistrationDate.strftime('%d %b %Y') if c.RegistrationDate else '—' }}
+                    </td>
+
+                    <td>
+                        <span class="count-badge">
+                            {{ account_counts[c.CustomerID] if account_counts is defined and c.CustomerID in account_counts else 0 }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+        <span class="empty-icon">◉</span>
+        <h3>No customers registered</h3>
+        <p>Register the first customer to begin creating linked bank accounts.</p>
+
+        <a class="button button-dark" href="{{ url_for('customer_new') }}">
+            Register customer
+        </a>
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
